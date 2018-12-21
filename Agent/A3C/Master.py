@@ -15,8 +15,7 @@ class Master(nn.Module):
         self.probability_distribution = torch.distributions.Categorical
 
     def create_model(self):
-        self.dense1 = nn.Linear(self.input_dim, 30)
-        self.dense2 = nn.Linear(30, self.action_dim)
+
 
     def forward(self, x):
         out_1 = torch.nn.functional.relu(self.dense1(x))
