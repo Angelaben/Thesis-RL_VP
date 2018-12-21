@@ -1,14 +1,10 @@
 import gym
 import numpy as np
-from itertools import count
-from collections import namedtuple
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.distributions import Categorical
-from Tools import Memory
 
 action_size = 2
 state_size = 4
@@ -54,18 +50,18 @@ class Runner() :
         value_loss = []
         rewards = []
         R = 0
-        for rew in rewards_log[::-1]:
+        for rew in rewards_log[::-1]:# Compute reward for trajectoire
             R = rew + self.gamma * R
             rewards.append(R)
         rewards.reverse()
         rewards = torch.tensor(rewards)
-        rewards = (rewards - rewards.mean()) / (rewards.std() + self.epsilon)
+        rewards = (rewards - rewards.mean()) / (rewards.std() + self.epsilon) # Normalize
         for (log_prob, value), r in zip(memorized, rewards):
-            reward = r - value.item()
-            policy_loss.append(-log_prob * reward)
-            value_loss.append(F.smooth_l1_loss(value, torch.tensor([r])))
+            Advantage = r - value.item() # Advantage estimate
+            policy_loss.append(-log_prob * Advantage) # Policy gradient loss
+            value_loss.append(F.smooth_l1_loss(value, torch.tensor([r]))) # Minimize R_T - prediction
         self.optimizer.zero_grad()
-        loss = torch.stack(policy_loss).sum() + torch.stack(value_loss).sum()
+        loss = torch.stack(policy_loss).sum() + torch.stack(value_loss).sum() # Remove gradient, maintain loss value
         loss.backward()
         self.optimizer.step()
         self.memory = []
@@ -74,11 +70,10 @@ class Runner() :
 
     def run(self) :
         rewards = []
-        running_reward = 0
         for i_episode in range(self.n_episode) :
             state = self.env.reset()
             ep_reward = 0
-            for t in range(1000) :
+            for t in range(1000) : # Collect trajectoire
                 action = self.select_action(state)
                 state, reward, done, _ = env.step(action)
                 ep_reward += reward
@@ -87,7 +82,6 @@ class Runner() :
                     break
             self.replay(rewards)
             rewards = []
-            running_reward = running_reward * self.gamma + t * (1 - self.gamma)
             if i_episode % self.log_delay == 0:
                 print("Episode {} with reward : {}".format(i_episode, ep_reward))
 
