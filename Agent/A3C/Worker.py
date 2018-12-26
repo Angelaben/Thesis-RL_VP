@@ -33,7 +33,8 @@ class Worker(mp.Process) :
             while True :
                 a = self.localNet.choose_action(convert_tensor(s[None, :]))
                 s_, r, done, _ = self.env.step(a)
-                if done : r = -1
+                if done :
+                    r = -1
                 ep_r += r
                 buffer_a.append(a)
                 buffer_s.append(s)
