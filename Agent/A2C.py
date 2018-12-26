@@ -19,6 +19,7 @@ class ActorCritic2(nn.Module) :
         self.value = nn.Linear(128, 1)
 
     def forward(self, x) :
+        print("Data ", x, x.shape)
         out_1 = F.relu(self.dense_1(x))
         probs = self.probability(out_1)
         value = self.value(out_1)
@@ -36,6 +37,7 @@ class Runner() :
         self.n_episode = n_episode
         self.batch_size = 32
         self.epsilon = np.finfo(np.float32).eps.item()
+
     def select_action(self, state) :
         state = torch.from_numpy(state).float()
         probs, value = self.model(state)
@@ -50,7 +52,7 @@ class Runner() :
         value_loss = []
         rewards = []
         R = 0
-        for rew in rewards_log[::-1]:# Compute reward for trajectoire
+        for rew in rewards_log[::-1]: # Compute reward for trajectoire
             R = rew + self.gamma * R
             rewards.append(R)
         rewards.reverse()
