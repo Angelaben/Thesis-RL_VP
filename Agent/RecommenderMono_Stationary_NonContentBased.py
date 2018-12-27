@@ -28,7 +28,7 @@ class ActorCritic2(nn.Module) :
         self.dense_item = nn.Linear(size_embedding_client, hidden_layer_size)
         self.dense_client = nn.Linear(size_embedding_item, hidden_layer_size)
         # Test concatenation apres concatenation
-        self.probability = nn.Linear(hidden_layer_size, n_item)
+        self.probability = nn.Linear(hidden_layer_size, 1)
         self.value = nn.Linear(hidden_layer_size, 1)
 
     # CONTENT BASED x : [client_properties ; item_properties]
@@ -47,10 +47,16 @@ class ActorCritic2(nn.Module) :
         embeds_items = self.embedder_item(items_list_ID)  # .view((1, -1))
         out_client = F.relu(self.dense_client(embeds_client))
         out_item = F.relu(self.dense_item(embeds_items))
+        # print("Out client debse", out_client.shape)
+        # print("Out item dense", out_item.shape)
+
         out = out_client * out_item
+        # print("Output size with mult", out.shape)
         #  print(out_client.shape, out_item.shape, out.shape)
         probs = self.probability(out)
         value = self.value(out)
+        # print("Probs shape : ", probs.shape)
+        # print("Value shape : ", value.shape)
         return F.softmax(probs, dim = 0), value
 
 
@@ -74,7 +80,7 @@ class Runner() :
         #  print(probs)
         m = Categorical(probs[torch.argmax(value)])
         action = m.sample()
-        self.memory.append((m.log_prob(action), value))
+        self.memory.append((m.log_prob(action), value[action]))
         return action.item()
 
     def replay(self, rewards_log) :
@@ -90,8 +96,7 @@ class Runner() :
         rewards = torch.tensor(rewards)
         rewards = (rewards - rewards.mean()) / (rewards.std() + self.epsilon)  # Normalize
         for (log_prob, value), r in zip(memorized, rewards) :
-            value = torch.max(value)
-            Advantage = r - value.item()  # Advantage estimate --- TODO : CHECKER SI COHERENT AVEC MAX
+            Advantage = r - value.item()  # Advantage estimate
             policy_loss.append(-log_prob * Advantage)  # Policy gradient loss
             value_loss.append(F.smooth_l1_loss(value, torch.tensor([r])))  # Minimize R_T - prediction
         self.optimizer.zero_grad()
@@ -101,31 +106,52 @@ class Runner() :
         self.memory = []
 
     def run(self) :
+        print(self.model)
         rewards = []
         cumulator = []
         ep_reward = 0
         last_reward = 0
         ep_reward_cumul = []
+        mean_delta = []
+        mean_log = []
+        delay = 1000
         for i_episode in range(self.n_episode) :
             client_id, items = self.env.reset()
             ep_reward_cumul.append(ep_reward)
+            mean_delta.append(np.mean(cumulator))
+            mean_log.append(np.mean(ep_reward_cumul))
+
             clear_output(True)
-            plt.subplot(211)
-            plt.plot(ep_reward_cumul)
-            plt.subplot(212)
-            plt.plot(cumulator)
+            plt.subplot(411)
+            plt.plot(ep_reward_cumul, label = "Reward")
+            plt.legend()
+            plt.grid()
+            plt.subplot(412)
+            plt.plot(cumulator, label = "delta between reward")
+            plt.legend()
+            plt.grid()
+            plt.subplot(413)
+            plt.plot(mean_log, label = "Mean reward")
+            plt.legend()
+            plt.grid()
+            plt.subplot(414)
+            plt.plot(mean_delta, label = "Mean delta")
+            plt.legend()
+            plt.grid()
+
             plt.show()
+
             ep_reward = 0
-            for t in range(100) :  # Collect trajectoire
+            for t in range(delay) :  # Collect trajectoire
                 # state = [client.get_properties[1], list_item, client_id]
                 state = [client_id, items]
                 action = self.select_action(state)
                 client_id, items, reward = env.step_mono_recommendation(action)
                 if reward > 0 :
-                    delta = t + i_episode * 100 - last_reward
+                    delta = t + i_episode * delay - last_reward
                     cumulator.append(delta)
 
-                    last_reward = t + i_episode * 100
+                    last_reward = t + i_episode * delay
                 ep_reward += reward
                 rewards.append(reward)
             self.replay(rewards)
