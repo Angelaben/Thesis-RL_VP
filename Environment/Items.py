@@ -17,3 +17,6 @@ class Items:
     @property
     def get_properties(self):
         return self._price, self._color, self._for_women
+    @property
+    def get_id(self):
+        return self._id

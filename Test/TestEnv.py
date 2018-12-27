@@ -1,4 +1,4 @@
-from Environment.BanditEnvironment import BanditEnvironment
+from Environment.BanditEnvironment_stationary import BanditEnvironment
 
 env = BanditEnvironment(5, 8)
 assert len(env.list_items) == 8
