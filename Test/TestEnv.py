@@ -10,3 +10,5 @@ client, list_as_array = env.reset()
 print("Client returned by reset ", client._my_id)
 for client in env.list_client:
     print("Client : ",client._my_id, "likes women items " , client._taste[2])
+
+env.step_mono_recommendation(5)

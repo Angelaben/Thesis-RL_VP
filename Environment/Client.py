@@ -14,7 +14,15 @@ class Client:
             self.generate_taste_color(nb_color),
             np.random.randint(2)
         ]
+        self.proba_vision = self.generate_proba_vision(3)
 
+    def generate_proba_vision(self, list_size):
+        rand = np.random.random(list_size) * 100
+        rand = rand / np.sum(rand)
+        rand.sort()
+        rand = rand.tolist()
+        rand.reverse()
+        return rand
 
     def generate_taste_price(self, range_price):
         priced = np.array(range(range_price))
@@ -26,3 +34,22 @@ class Client:
         colors = np.random.random(nb_color) * 100
         colors /= np.sum(colors)
         return colors
+    @property
+    def get_properties(self):
+        return self.center_of_price, self._taste
+
+    def offer(self, item_recommended, is_list_reco = False):
+        reward = 0
+        coin_toss = np.random.random()
+        if is_list_reco:
+            return reward # TODO
+        else :
+            print(item_recommended.get_properties)
+            price, color, gender = item_recommended.get_properties
+            print(price, color, gender)
+            proba_buy_price = self._taste[0][price]
+            proba_buy_color = self._taste[1][color]
+            proba_buy_gender = self._taste[2] # Ignore tant que je trouve une facon de l'utiliser
+            print(proba_buy_price, proba_buy_color, proba_buy_gender)
+            return 1 if coin_toss < proba_buy_color * proba_buy_price else 0
+
