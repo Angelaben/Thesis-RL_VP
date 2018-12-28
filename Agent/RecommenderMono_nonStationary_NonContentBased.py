@@ -6,7 +6,7 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
-from Environment.BanditEnvironment_stationary import BanditEnvironment as env_generator
+from Environment.BanditEnvironment_NON_stationary import BanditEnvironment_Non_stationary as env_generator
 
 n_feature_item = 3
 n_feature_client = 3
