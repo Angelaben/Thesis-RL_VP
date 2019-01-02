@@ -30,7 +30,7 @@ class BanditEnvironment:
         self.current_client = np.random.randint(self.n_client)
         # Non content based
 
-       # random.shuffle(self.list_items)
+        random.shuffle(self.list_items)
 
 
         return self.current_client, self.list_items , reward
@@ -57,8 +57,8 @@ class BanditEnvironment:
             for counter, item in enumerate(self.list_items) :
                 score_price = taste_price[item.get_Price]  # Esperance achat selon prix
                 score_color = taste_color[item.get_color]  # Esperance achat selon couleur
-                expected_reward_proba = score_price * score_color
+                expected_reward_proba = score_price * score_color * item.get_Price
                 if expected_reward_proba > max_item_score :
-                    max_item_score = expected_reward_proba * item.get_Price
+                    max_item_score = expected_reward_proba
             max_reward_probs.append(max_item_score)  # Item le plus probable d'achat
         return max_reward_probs
