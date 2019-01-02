@@ -26,12 +26,13 @@ class BanditEnvironment:
     # Action is a simple item
     def step_mono_recommendation(self, action):
         item_selected = self.list_items[action]
-      #  print("Recommande ", action, " a l'utilisateur ", self.current_client)
-       # print("Client courant : centre prix - taste", self.list_client[self.current_client].get_properties)
         reward = self.list_client[self.current_client].offer(item_selected)
         self.current_client = np.random.randint(self.n_client)
         # Non content based
-        random.shuffle(self.list_items)
+
+       # random.shuffle(self.list_items)
+
+
         return self.current_client, self.list_items , reward
 
     # Action is a list of item
@@ -44,3 +45,20 @@ class BanditEnvironment:
         return self.current_client, self.list_items
 
 
+    # Recuperer l'esperance de gain en recuperant le max esperance max item par client , moyenne et non moyenne sur les autres items
+    # Reward / Client = Max proba item * prix (= 1 pour l'instant, juste proba d'acaht sans reward sur l'achat)
+    def get_indicator(self) :
+        max_reward_probs = []
+        for client in self.list_client :
+            # Calcul appetence de l'user pour la liste d'item
+            taste_price = client.get_taste_price
+            taste_color = client.get_taste_color
+            max_item_score = -1
+            for counter, item in enumerate(self.list_items) :
+                score_price = taste_price[item.get_Price]  # Esperance achat selon prix
+                score_color = taste_color[item.get_color]  # Esperance achat selon couleur
+                expected_reward_proba = score_price * score_color
+                if expected_reward_proba > max_item_score :
+                    max_item_score = expected_reward_proba * item.get_Price
+            max_reward_probs.append(max_item_score)  # Item le plus probable d'achat
+        return max_reward_probs

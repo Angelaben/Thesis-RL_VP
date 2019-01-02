@@ -55,20 +55,4 @@ class BanditEnvironment_Non_stationary(BanditEnvironment) :
         for client_id in range(self.n_client) :
             self.list_client.append(Client(client_id,n_item = self.n_item,  nb_color = self.nb_color, range_price = self.range_price))
 
-    # Recuperer l'esperance de gain en recuperant le max esperance max item par client , moyenne et non moyenne sur les autres items
-    # Reward / Client = Max proba item * prix (= 1 pour l'instant, juste proba d'acaht sans reward sur l'achat)
-    def get_indicator(self) :
-        max_reward_probs = []
-        for client in self.current_client :
-            # Calcul appetence de l'user pour la liste d'item
-            taste_price = client.get_taste_price
-            taste_color = client.get_taste_color
-            max_item_score = -1
-            for counter, item in enumerate(self.list_items) :
-                score_price = taste_price[item.get_Price]  # Esperance achat selon prix
-                score_color = taste_color[item.get_color]  # Esperance achat selon couleur
-                expected_reward_proba = score_price * score_color
-                if expected_reward_proba > max_item_score :
-                    max_item_score = expected_reward_proba
-            max_reward_probs.append(max_item_score)  # Item le plus probable d'achat
-        return max_reward_probs
+

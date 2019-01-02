@@ -7,8 +7,10 @@ assert len(env.list_item_as_array) == 8
 print("=====List item as array=====")
 print(env.list_item_as_array)
 client, list_as_array = env.reset()
-print("Client returned by reset ", client._my_id)
+print("Client returned by reset ", client)
 for client in env.list_client:
     print("Client : ",client._my_id, "likes women items " , client._taste[2])
 
-env.step_mono_recommendation(5)
+for i in range(10):
+    env.step_mono_recommendation(5)
+    print(env.get_indicator())

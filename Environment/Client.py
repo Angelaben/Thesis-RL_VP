@@ -69,4 +69,5 @@ class Client :
             proba_buy_price = self._taste[0][price]
             proba_buy_color = self._taste[1][color]
             proba_buy_gender = self._taste[2]  # Ignore tant que je trouve une facon de l'utiliser
-            return 1 if coin_toss < proba_buy_color * proba_buy_price else 0
+            return price if coin_toss < proba_buy_color * proba_buy_price else 0
+        # Ou faire P(A) + P(b) - P(A int B) ?
