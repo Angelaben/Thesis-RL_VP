@@ -35,8 +35,8 @@ class Logger:
         plt.figure(2, figsize = (4, 4))
        # plt.axis([0, len(self.log_per_client_reward_mean), 0, 2])
         for index_client in range(self.n_client):
-            plt.plot(self.log_per_client_reward_mean[index_client], label = "Client {}".format(index_client))
-        plt.plot(self.log_mean_opti[:len(self.log_per_client_reward_mean[0])], label = "Mean ref optimal")
+            plt.plot(self.log_per_client_reward_mean[index_client][-1000:], label = "Client {}".format(index_client))
+        plt.plot(self.log_mean_opti[-1000:], label = "Mean ref optimal")
         plt.grid()
         plt.legend()
         plt.show()
@@ -46,7 +46,7 @@ class Logger:
         plt.figure(3, figsize = (4, 4))
         plt.axis([0, 10000, 0, 1])
         for client_index in range(self.n_client):
-            plt.plot(self.log_opti[client_index], label = "Client {}".format(client_index))
+            plt.plot(self.log_opti[client_index], label = "Client indicator {}".format(client_index))
         plt.legend()
         plt.show()
 
