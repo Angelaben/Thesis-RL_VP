@@ -60,14 +60,15 @@ class Client :
         return self.proba_vision
 
     def offer(self, item_recommended, is_list_reco = False) :
-        reward = 0
+
         coin_toss = np.random.random()
         if is_list_reco :
-            return -1  # TODO
+            raise Exception("Not defined")
         else :
             price, color, gender = item_recommended.get_properties
             proba_buy_price = self._taste[0][price]
             proba_buy_color = self._taste[1][color]
             proba_buy_gender = self._taste[2]  # Ignore tant que je trouve une facon de l'utiliser
-            return price if coin_toss < proba_buy_color * proba_buy_price else 0
+            interest = proba_buy_price * proba_buy_color
+            return price if coin_toss < proba_buy_color * proba_buy_price else interest
         # Ou faire P(A) + P(b) - P(A int B) ?

@@ -7,3 +7,4 @@ assert item.get_id == 5
 print("List item ", item.list_item())
 print("Get as list ", item.get_as_list())
 print("Properties ", item.get_properties)
+print("One hot : ", item.get_as_one_hot())

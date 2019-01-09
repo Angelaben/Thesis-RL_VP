@@ -29,10 +29,7 @@ class BanditEnvironment:
         reward = self.list_client[self.current_client].offer(item_selected)
         self.current_client = np.random.randint(self.n_client)
         # Non content based
-
-        random.shuffle(self.list_items)
-
-
+      #  random.shuffle(self.list_items)
         return self.current_client, self.list_items , reward
 
     # Action is a list of item

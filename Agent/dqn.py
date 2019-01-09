@@ -60,7 +60,9 @@ def replay(memory, modele, optimizer):
     prediction = prediction.view(-1, 1)
     real_value = modele(states)[:, 0, :]
     actions = actions.view(-1, 1)
+    print("Actions ", actions.shape)
     real_value = torch.Tensor(real_value).gather(1, actions.long())
+
     loss = F.mse_loss(real_value, prediction.float())
     optimizer.zero_grad()
     loss.backward()

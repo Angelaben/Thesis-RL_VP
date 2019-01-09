@@ -1,5 +1,5 @@
 import numpy as np
-
+from keras.utils import to_categorical
 np.random.seed(42)
 
 
@@ -9,6 +9,7 @@ class Items :
         self._price = np.random.randint(interval_price)
         self._color = np.random.randint(interval_color)
         self._for_women = np.random.randint(2)
+        self.interval_color = interval_color
 
     def list_item(self) :
         return {"Price " : self._price, "Color " : self._color, "Women item" : self._for_women}
@@ -16,6 +17,8 @@ class Items :
     def get_as_list(self) :
         return [self._id, self._price, self._color, self._for_women]
 
+    def get_as_one_hot(self):
+        return [self.get_id, self.get_Price, to_categorical(self.get_color, num_classes = self.interval_color)]
     @property
     def get_properties(self) :
         return self._price, self._color, self._for_women

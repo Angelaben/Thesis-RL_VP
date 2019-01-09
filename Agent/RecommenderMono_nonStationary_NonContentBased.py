@@ -14,20 +14,15 @@ range_price = 10
 range_color = 5
 n_client = 5
 n_item = 5
-size_embedding_client = 2
-size_embedding_item = 2
 hidden_layer_size = 128
-
+size_input_item = 4
+size_input_client = 4
 
 class ActorCritic2(nn.Module) :
     def __init__(self) :
         super(ActorCritic2, self).__init__()
-        self.embedder_item = nn.Embedding(n_item, size_embedding_item)
-
-        self.embedder_client = nn.Embedding(n_client, size_embedding_client)
-        self.dense_item = nn.Linear(size_embedding_client, hidden_layer_size)
-        self.dense_client = nn.Linear(size_embedding_item, hidden_layer_size)
-        # Test concatenation apres concatenation
+        self.dense_item = nn.Linear(size_input_item, hidden_layer_size)
+        self.dense_client = nn.Linear(size_input_client, hidden_layer_size)
         self.probability = nn.Linear(hidden_layer_size, 1)
         self.value = nn.Linear(hidden_layer_size, 1)
 
@@ -43,20 +38,12 @@ class ActorCritic2(nn.Module) :
         client_ID = torch.tensor(x[0], dtype = torch.long)
         items_lists = x[1]
         items_list_ID = torch.tensor([item.get_id for item in items_lists])
-        embeds_client = self.embedder_client(client_ID)  # .view((1, -1))
-        embeds_items = self.embedder_item(items_list_ID)  # .view((1, -1))
-        out_client = F.relu(self.dense_client(embeds_client))
-        out_item = F.relu(self.dense_item(embeds_items))
+        out_client = F.relu(self.dense_client(client_ID))
+        out_item = F.relu(self.dense_item(items_list_ID))
         # print("Out client debse", out_client.shape)
-        # print("Out item dense", out_item.shape)
-
         out = out_client * out_item
-        # print("Output size with mult", out.shape)
-        #  print(out_client.shape, out_item.shape, out.shape)
         probs = self.probability(out)
         value = self.value(out)
-        # print("Probs shape : ", probs.shape)
-        # print("Value shape : ", value.shape)
         return F.softmax(probs, dim = 0), value
 
 
@@ -74,10 +61,6 @@ class Runner() :
 
     def select_action(self, state) :
         probs, value = self.model(state)
-        # On recupere une proba 5x5
-        # Theorie : Utiliser la repartition de la ligne avec meilleure value ?
-        #  print("Probs and value shape ", probs.shape, value.shape, torch.argmax(value))
-        #  print(probs)
         m = Categorical(probs[torch.argmax(value)])
         action = m.sample()
         self.memory.append((m.log_prob(action), value[action]))
