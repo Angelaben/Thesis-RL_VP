@@ -1,4 +1,4 @@
-from Agent.RecommenderMono_Stationary_NonContentBased import Runner, ActorCritic2
+from Agent.RecommenderMono_Stationary_AC_NonContentBased import Runner, ActorCritic2
 import numpy as np
 import torch
 import torch.nn as nn
