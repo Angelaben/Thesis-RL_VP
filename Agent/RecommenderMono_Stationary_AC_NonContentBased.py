@@ -39,6 +39,7 @@ class ActorCritic2(nn.Module) :
 
     # Non content based : Client_ID - ListItem
     def forward(self, x) :
+        print("X : ", x)
         client_ID = torch.tensor(x, dtype = torch.float)
         out = F.relu(self.dense(client_ID))
         probs = self.probability(out)

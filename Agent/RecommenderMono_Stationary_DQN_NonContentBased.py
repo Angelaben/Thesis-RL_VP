@@ -1,38 +1,9 @@
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import matplotlib.pyplot as plt
-from IPython.display import clear_output
-from Environment.BanditEnvironment_stationary import BanditEnvironment as env_generator
-from Tools import Logger
-from collections import deque
-from keras.utils import to_categorical
-import itertools
-
-n_feature_item = 3
-n_feature_client = 3
-range_price = 10
-range_color = 5
-n_client = 5
-n_item = 5
-hidden_layer_size = 128
-learning_rate = 5e-4
-log_delay = 10
-batch_size = 32
-target_update = 50
-epsilon_decay = 10
-input_state_size = 1 + (range_color + 1 + n_item)# * n_item
-GAMMA = 0.99
-memory = deque(maxlen = 10000)
-
-
 def preprocess(user_id, items) :
     state = [[user_id]]
     for item in items :
+        print("Item : ", item)
         as_category = item.get_as_one_hot()
-        state.append(to_categorical(as_category[0], num_classes = n_item))  # Id
+        state.append(as_category[0])  # Id
         state.append([as_category[1]])  # Price
         state.append(as_category[2])  # Color
     flat = itertools.chain.from_iterable(state)
@@ -72,6 +43,42 @@ def process_states(batch_states) :
             sub_batch.append(preprocess(user_id, [items]))
         batch.append(sub_batch)
     return batch
+import os
+import torch
+os.chdir("/Users/benjaminangelard/Thesis_Recommender_system")
+
+#torch.set_default_tensor_type('torch.cuda.FloatTensor')
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.distributions import Categorical
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
+from Environment.BanditEnvironment_stationary import BanditEnvironment as env_generator
+from Tools import Logger
+from collections import deque
+from keras.utils import to_categorical
+import itertools
+
+n_feature_item = 3
+n_feature_client = 3
+range_price = 10
+range_color = 5
+n_client = 5
+n_item = 5
+hidden_layer_size = 256
+learning_rate = 5e-4
+log_delay = 10
+batch_size = 32
+target_update = 20
+epsilon_decay = 50
+catalog_size = 50
+input_state_size = catalog_size + 1 + range_color + 1 # ID - price - range_color + UID
+print(input_state_size)
+GAMMA = 0.99
+memory = deque(maxlen = 10000)
 
 class DQN(nn.Module) :
     def __init__(self, gamma) :
@@ -84,6 +91,7 @@ class DQN(nn.Module) :
         self.dense2 = nn.Linear(hidden_layer_size, 1)
 
     def forward(self, x) :
+        print("X ", len(x))
         client_ID = torch.from_numpy(np.array(x)).float()
         out_1 = torch.relu(self.dense1(client_ID))
         return self.dense2(out_1)
@@ -132,7 +140,7 @@ class Runner() :
         self.n_episode = n_episode
         self.batch_size = batch_size
         self.epsilon = np.finfo(np.float32).eps.item()
-        self.logger = Logger.Logger(n_client, env, 1000)
+        self.logger = Logger.Logger(n_client, env, 10000)
         self.memory_loss = []
         self.epsilon_explo = 1.0
         self.epsilon_origin = 1.0
@@ -157,10 +165,7 @@ class Runner() :
             if i_episode % self.log_delay == 0 :
                 clear_output(True)
                 self.logger.plot()
-                plt.plot(self.memory_loss, label = "Loss")
-                plt.grid()
-                plt.legend()
-                plt.show()
+
 
             ep_reward = 0
             for t in range(delay) :  # Collect trajectoire

@@ -28,7 +28,7 @@ learning_rate = 1e-5
 log_delay = 100
 batch_size = 256
 epsilon_decay = 1000
-item = Items.Items(4, range_price - 1, range_color - 1)
+item = Items.Items(4, range_price - 1, range_color - 1, catalog_size = 10)
 client = Client.Client(id = 4, n_item = n_item, nb_color = range_color, range_price =  range_price)
 
 env = env_generator(n_client = n_client, n_item = n_item, nb_color = range_color, range_price = range_price)
@@ -38,5 +38,6 @@ print(state)
 for i in range(100):
     client_id, items = env.reset()
     state = runner.preprocess(client_id, items)
+    print("State shape ", len(state))
     action = runner.select_action(state)
     print(action)

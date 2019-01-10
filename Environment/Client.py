@@ -15,7 +15,7 @@ class Client :
             # Price
             self.generate_taste_price(range_price),
             self.generate_taste_color(nb_color),
-            np.random.randint(2)
+            np.random.randint(2) # Gender non utilisé
         ]
         self.proba_vision = self.generate_proba_vision(n_item) # Pas encore utilisé
 
@@ -70,5 +70,5 @@ class Client :
             proba_buy_color = self._taste[1][color]
             proba_buy_gender = self._taste[2]  # Ignore tant que je trouve une facon de l'utiliser
             interest = proba_buy_price * proba_buy_color
-            return price if coin_toss < proba_buy_color * proba_buy_price else interest
+            return price if coin_toss < interest else interest
         # Ou faire P(A) + P(b) - P(A int B) ?
