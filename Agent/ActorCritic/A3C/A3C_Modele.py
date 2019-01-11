@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from Agent.A3C.utilities import set_init
+from Agent.ActorCritic.A3C.utilities import set_init
 
 
 class Net(nn.Module) :

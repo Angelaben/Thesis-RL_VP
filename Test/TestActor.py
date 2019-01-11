@@ -1,15 +1,5 @@
-from Agent.RecommenderMono_Stationary_AC_NonContentBased import Runner, ActorCritic2
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.distributions import Categorical
-import matplotlib.pyplot as plt
-from IPython.display import clear_output
+from Agent.ActorCritic.A2C.Script import Runner
 from Environment.BanditEnvironment_stationary import BanditEnvironment as env_generator
-from Tools import Logger
-from keras.utils import to_categorical
 from Environment import Client
 from Environment import Items
 

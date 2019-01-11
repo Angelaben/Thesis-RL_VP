@@ -3,8 +3,8 @@ import os
 import gym
 import torch.multiprocessing as mp
 
-from Agent.A3C.utilities import convert_tensor, train_agent, record
-from Agent.A3C.A3C_Modele import Net
+from Agent.ActorCritic.A3C.utilities import convert_tensor, train_agent, record
+from Agent.ActorCritic.A3C.A3C_Modele import Net
 env = gym.make('CartPole-v0')
 N_S = env.observation_space.shape[0]
 N_A = env.action_space.n

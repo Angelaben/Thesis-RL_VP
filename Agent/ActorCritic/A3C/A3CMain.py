@@ -1,5 +1,5 @@
 """
-Reinforcement Learning (A3C) using Pytroch + multiprocessing.
+Reinforcement Learning (ActorCritic) using Pytroch + multiprocessing.
 The most simple implementation for continuous action.
 View more on my Chinese tutorial page [莫烦Python](https://morvanzhou.github.io/).
 """
@@ -9,9 +9,9 @@ import os
 import gym
 import torch.multiprocessing as mp
 
-from Agent.A3C.shared_adam import SharedAdam
-from Agent.A3C.Worker import Worker
-from Agent.A3C.A3C_Modele import Net
+from Agent.ActorCritic.A3C.shared_adam import SharedAdam
+from Agent.ActorCritic.A3C.Worker import Worker
+from Agent.ActorCritic.A3C.A3C_Modele import Net
 UPDATE_GLOBAL_ITER = 10
 GAMMA = 0.9
 MAX_EP = 4000
