@@ -20,9 +20,9 @@ class BanditEnvironment_regeneration(BanditEnvironment) :
 
     def step_mono_recommendation(self, action) :
 
-        super(BanditEnvironment_regeneration, self).step_mono_recommendation(action)
+        self.current_client, self.list_items, reward = super(BanditEnvironment_regeneration, self).step_mono_recommendation(action)
         self.count += 1  # La regeneration de client et d'item n'a pas lieu dans la reco
-
+        return self.current_client, self.list_items, reward
     def reset(self) :
         self.current_client, self.list_items = super(BanditEnvironment_regeneration, self).reset()
         self.count += 1
@@ -34,6 +34,7 @@ class BanditEnvironment_regeneration(BanditEnvironment) :
         return self.current_client, self.list_items, should_reset  # Should reset pour le logger
 
     def regenerate(self) :
+        print("Regeneration of clients and items")
         self.list_items = []
         self.catalog = []
         self.list_client = []
