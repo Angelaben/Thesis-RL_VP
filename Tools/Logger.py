@@ -46,8 +46,9 @@ class Logger:
         plt.figure(2, figsize = (5, 5))
         for index_client in range(self.n_client):
             plt.plot(self.log_per_client_reward_mean[index_client][-self.lim:],\
-                     label = "Client {}".format(index_client))
-        plt.plot(self.log_mean_opti[:len(self.log_per_client_reward_mean[0])], label = "Mean ref optimal")
+                     label = "Client {} delta".format(index_client))
+        # Deprecated ,on affiche les differences mtn
+        #plt.plot(self.log_mean_opti[:len(self.log_per_client_reward_mean[0])], label = "Mean ref optimal")
         plt.grid()
         plt.legend()
         plt.show()
@@ -62,14 +63,9 @@ class Logger:
 
 
     def reset(self, n_client):
-        self.log_reward = []
-        self.log_mean_reward = []
         self.log_per_client_reward = [[] for _ in range(n_client)]
         self.log_per_client_reward_mean = [[] for _ in range(n_client)]
         self.log_opti = [[] for _ in range(n_client)]
-        self.log_mean_opti = []
-        self.log_random = []
-        self.log_random_mean = []
-        self.log_mean_opti_smoothed = []
+       # self.log_mean_opti = []
         self.log_per_client_mean_best_buy = [[] for _ in range(n_client)]
         self.n_client = n_client
