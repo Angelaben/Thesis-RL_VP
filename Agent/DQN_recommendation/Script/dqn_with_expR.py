@@ -40,7 +40,7 @@ def remember(memory, state, action, next_state, reward, done):
 def sample(batch_size, memory):
     transitions, indices, weights = memory.sample(batch_size)
     batch_state, batch_action, batch_reward, batch_next_state, dones = zip(*transitions)
-    return np.array(batch_state), torch.Tensor(batch_action), np.array(batch_next_state), np.array(batch_reward), np.array(dones)
+    return np.array(batch_state), torch.Tensor(batch_action), np.array(batch_next_state), np.array(batch_reward), np.array(dones), indices
 
 
 
@@ -55,7 +55,7 @@ def choose_action(state, epsilon, model):
 
 
 def replay(memory, modele, optimizer):
-    states, actions, next_states, rewards, dones = sample(BATCH_SIZE, memory)
+    states, actions, next_states, rewards, dones, indices = sample(BATCH_SIZE, memory)
     prediction = torch.Tensor((1 - dones) * (rewards + modele.gamma * np.amax(target(next_states).detach().max(1)[0].numpy(), axis = 1)))
     prediction = prediction.view(-1, 1)
     real_value = modele(states)[:, 0, :]
@@ -64,6 +64,7 @@ def replay(memory, modele, optimizer):
     real_value = torch.Tensor(real_value).gather(1, actions.long())
 
     loss = F.mse_loss(real_value, prediction.float())
+    memory.update_priorities(indices, (real_value - prediction).detach().squeeze().abs().cpu().numpy().tolist())
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
@@ -85,7 +86,7 @@ target = DQN(
 )
 target.load_state_dict(model.state_dict())
 target.eval()
-optimizer = optim.Adam(model.parameters(), lr = 5e-2)
+optimizer = optim.Adam(model.parameters(), lr = 1e-2)
 env = gym.make('CartPole-v0')#.unwrapped
 epsilon = 1.0
 epsilon_origin = 1.0
