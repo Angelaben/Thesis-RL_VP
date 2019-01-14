@@ -90,7 +90,7 @@ optimizer = optim.Adam(model.parameters(), lr = 1e-2)
 env = gym.make('CartPole-v0')#.unwrapped
 epsilon = 1.0
 epsilon_origin = 1.0
-decay_period = 100
+decay_period = 300
 plotter = []
 mean_plot = []
 for i in trange(1, 400):
