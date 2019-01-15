@@ -77,7 +77,7 @@ def replay(memory, modele, optimizer):
     loss.backward()
     optimizer.step()
 
-memory = PrioritizedReplayMemory(100000, beta_annealing = 99900)#TODO
+memory = PrioritizedReplayMemory(10000, beta_annealing = 9990)
 model = DuelingDQN(
     gamma = 0.99,
     max_ep = 400,
@@ -94,11 +94,11 @@ target = DuelingDQN(
 )
 target.load_state_dict(model.state_dict())
 target.eval()
-optimizer = optim.Adam(model.parameters(), lr = 5e-2)
+optimizer = optim.Adam(model.parameters(), lr = 1e-4)
 env = gym.make('CartPole-v0')#.unwrapped
 epsilon = 1.0
 epsilon_origin = 1.0
-decay_period = 100
+decay_period = 300
 plotter = []
 mean_plot = []
 for i in trange(1, 400):
