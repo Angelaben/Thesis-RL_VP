@@ -27,7 +27,7 @@ class BanditEnvironment :
         for client_id in range(n_client) :
             self.list_client.append(Client(client_id, n_item = n_item, nb_color = nb_color, range_price = range_price))
         for item_id in range(catalog_size) :
-            self.catalog.append(Items(item_id, interval_price = range_price, interval_color = nb_color))
+            self.catalog.append(Items(item_id, interval_price = range_price, interval_color = nb_color, catalog_size = catalog_size))
         self.current_client = -1
         self.range_price = range_price
         self.nb_color = nb_color

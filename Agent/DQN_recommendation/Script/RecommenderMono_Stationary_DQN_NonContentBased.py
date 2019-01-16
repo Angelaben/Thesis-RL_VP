@@ -205,3 +205,6 @@ if __name__ == '__main__' :
 # TODO :
 # Si un utilisateur a eut une bonne recommendation sa "satisfaction augmente" donc plus de chance d'achat, bonus en % sur chance d'achat
 # Essayer https://arxiv.org/pdf/1810.12027.pdf
+
+# PROD2VEC pour les items ?
+# Meta prod 2 vec de criteo ?

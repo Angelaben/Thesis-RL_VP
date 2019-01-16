@@ -1,0 +1,13 @@
+tensorflow-gpu
+numpy
+atari-py
+opencv-python
+absl-py
+gin-config
+gym
+setproctitle
+tqdm
+seaborn
+torch
+keras
+numba

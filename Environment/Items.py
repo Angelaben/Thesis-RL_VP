@@ -5,7 +5,7 @@ np.random.seed(42)
 
 
 class Items :
-    def __init__(self, id, interval_price = 100, interval_color = 5, catalog_size = 50) :
+    def __init__(self, id, interval_price = 100, interval_color = 5, catalog_size = -1) :
         self._id = id
         self._price = np.random.randint(interval_price)
         self._color = np.random.randint(interval_color)

@@ -2,7 +2,8 @@ import numpy as np
 
 np.random.seed(84)
 
-
+# Rajouter decaying proba item
+# Reco list
 class Client :
     # Feature : Price - Color - Gender
     def __init__(self, id, n_item, nb_color = 5, range_price = 100) :

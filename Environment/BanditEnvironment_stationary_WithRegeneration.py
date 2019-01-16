@@ -43,6 +43,6 @@ class BanditEnvironment_regeneration(BanditEnvironment) :
             self.list_client.append(
                 Client(client_id, n_item = self.n_item, nb_color = self.nb_color, range_price = self.range_price))
         for item_id in range(self.catalog_size) :
-            self.catalog.append(Items(item_id, interval_price = self.range_price, interval_color = self.nb_color))
+            self.catalog.append(Items(item_id, interval_price = self.range_price, interval_color = self.nb_color, catalog_size = self.catalog_size))
         indices = np.random.randint(0, self.catalog_size, self.n_item)  # Genere une nouvelle liste
         self.list_items = [self.catalog[idx] for idx in indices]
